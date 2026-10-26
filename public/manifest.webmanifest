@@ -1,0 +1,31 @@
+{
+  "id": "/",
+  "name": "Agent Veto — Autonomous AI Desktop Agent",
+  "short_name": "Agent Veto",
+  "description": "Voice-activated, multilingual autonomous AI desktop operating environment with multi-step task planning, permission-aware execution, and cross-application workflows.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#070A11",
+  "theme_color": "#070A11",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

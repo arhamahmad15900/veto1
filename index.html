@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Agent Veto — Autonomous AI Desktop Agent</title>
+    <meta name="description" content="Voice-activated, multilingual autonomous AI desktop operating environment with multi-step task planning, permission-aware execution, cross-application workflows, and real-time acoustic telemetry." />
+    <meta property="og:title" content="Agent Veto — Autonomous AI Desktop Agent" />
+    <meta property="og:description" content="Voice-activated, multilingual autonomous AI desktop operating environment with multi-step task planning, permission-aware execution, cross-application workflows, and real-time acoustic telemetry." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#070A11" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Agent Veto" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        const NativeWebSocket = window.WebSocket;
+        if (!NativeWebSocket) return;
+        function PatchedWebSocket(url, protocols) {
+          const isViteHmr =
+            protocols === 'vite-hmr' ||
+            (Array.isArray(protocols) && protocols.includes('vite-hmr')) ||
+            (typeof url === 'string' && url.includes('token='));
+          if (isViteHmr) {
+            const target = new EventTarget();
+            target.url = String(url || '');
+            target.readyState = 1;
+            target.protocol = 'vite-hmr';
+            target.extensions = '';
+            target.bufferedAmount = 0;
+            target.binaryType = 'blob';
+            target.CONNECTING = 0;
+            target.OPEN = 1;
+            target.CLOSING = 2;
+            target.CLOSED = 3;
+            target.send = function () {};
+            target.close = function () {};
+            setTimeout(function () {
+              const evt = new Event('open');
+              target.dispatchEvent(evt);
+              if (typeof target.onopen === 'function') {
+                target.onopen(evt);
+              }
+            }, 0);
+            return target;
+          }
+          return protocols !== undefined
+            ? new NativeWebSocket(url, protocols)
+            : new NativeWebSocket(url);
+        }
+        PatchedWebSocket.prototype = NativeWebSocket.prototype;
+        PatchedWebSocket.CONNECTING = NativeWebSocket.CONNECTING;
+        PatchedWebSocket.OPEN = NativeWebSocket.OPEN;
+        PatchedWebSocket.CLOSING = NativeWebSocket.CLOSING;
+        PatchedWebSocket.CLOSED = NativeWebSocket.CLOSED;
+        window.WebSocket = PatchedWebSocket;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

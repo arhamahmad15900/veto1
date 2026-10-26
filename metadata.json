@@ -1,0 +1,6 @@
+{
+  "name": "Agent Veto — Autonomous AI Desktop Agent",
+  "description": "Voice-activated, multilingual autonomous AI desktop operating environment with multi-step task planning, permission-aware execution, cross-application workflows, and real-time acoustic telemetry.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
