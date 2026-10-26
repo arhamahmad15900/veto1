@@ -1,6 +1,6 @@
 import express from 'express';
 import http from 'http';
-import { createServer as createViteServer } from 'vite';
+import { createServer as createViteServer, build as viteBuild } from 'vite';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
@@ -2241,25 +2241,41 @@ app.post('/api/veto/transcribe', async (req, res) => {
 });
 
 async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
+  const distPath = path.resolve(process.cwd(), 'dist');
+  const distIndexPath = path.join(distPath, 'index.html');
+
+  // If deployed in production (e.g., on Render) without running `vite build` first,
+  // automatically build the production frontend bundle so `dist/index.html` exists.
+  if (process.env.NODE_ENV === 'production' && !fs.existsSync(distIndexPath)) {
+    console.log('dist/index.html not found in production — building frontend bundle automatically...');
+    try {
+      await viteBuild();
+      console.log('Frontend production bundle built successfully.');
+    } catch (buildErr: any) {
+      console.warn('Automatic viteBuild failed, falling back to Vite middleware:', buildErr?.message || buildErr);
+    }
+  }
+
+  if (process.env.NODE_ENV === 'production' && fs.existsSync(distIndexPath)) {
+    app.use(express.static(distPath));
+    app.use((req, res, next) => {
+      if (req.method === 'GET' && !req.path.startsWith('/api')) {
+        return res.sendFile(distIndexPath);
+      }
+      next();
+    });
+  } else {
     process.env.DISABLE_HMR = 'true';
     const vite = await createViteServer({
       server: {
         middlewareMode: true,
         hmr: false,
         watch: null,
+        allowedHosts: true,
       },
       appType: 'spa',
     });
     app.use(vite.middlewares);
-  } else {
-    const distPath = path.resolve(process.cwd(), 'dist');
-    if (fs.existsSync(distPath)) {
-      app.use(express.static(distPath));
-      app.get('*', (_req, res) => {
-        res.sendFile(path.join(distPath, 'index.html'));
-      });
-    }
   }
 
   httpServer.listen(PORT, '0.0.0.0', () => {
@@ -2268,3 +2284,4 @@ async function startServer() {
 }
 
 startServer();
+
